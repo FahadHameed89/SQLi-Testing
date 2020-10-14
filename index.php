@@ -6,7 +6,7 @@
  $connection = new mysqli(HOST, USER, PASSWORD, DATABASE);
  $number_of_exhibits = 0;
  $exhibit_message = "";
-
+ $exhibitID = "";
 
 if ($connection->connect_error) {
     die('Connection Failed: ' . $connection->connect_error);
@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
         $exhibit_message .= sprintf('
             <h3>%s</h3>
             <p>%s</p>
-            <p><a href="exhibit_animals.php?exhibit_id=%d">View Animals</p>
+            <p><a href="exhibit_animals.php?exhibit_id=%d">View Animals $GET</a></p>
         ',
         $row['ExhibitName'],
         $row['ExhibitDescription'],
@@ -54,6 +54,6 @@ $connection->close();
     <p>We currently have <?php echo $number_of_exhibits; ?> exhibit(s) for you to visit!</p>
     <h2>North American Animals</h2>
     <?php echo $exhibit_message; ?>
-     
+
  </body>
  </html>

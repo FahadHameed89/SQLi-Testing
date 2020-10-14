@@ -68,6 +68,10 @@ $exhibit_ID = null;
             <th>CommonName</th>
             <th>ScientificName</th>
         </tr>
+
+<p>
+<?php echo "This is Exhibit #:" . $_GET['exhibitID']; ?>
+</p>
             <?php echo $exhibit_animals ?>
         </table>
 </body>
