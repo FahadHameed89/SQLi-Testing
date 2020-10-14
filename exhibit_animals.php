@@ -2,6 +2,7 @@
 require 'constants.php';
 
 $exhibit_animals = null;
+$exhibit_animals = "";
 //$exhibit_id = $_GET['exhibit_id'];
 //echo $exhibit_id;
 
@@ -13,29 +14,30 @@ $exhibit_animals = null;
     $exhibit_id = $_GET['exhibit_id'];
 
  // Create A Connection
- $connection = new mysqli(HOST, USER, PASSWORD, DATABASE);
-    if ( $connection->connect_errno ) {
-        die("Connection Failed: " . $connection->connect_errono );
-    }
-    $sql = "SELECT AnimalID, CommonName, ScientificName
+
+    $animal_sql = "SELECT Name, CommonName, ScientificName
             FROM animal 
             INNER JOIN species USING (SpeciesID)
             WHERE AnimalID IN
                 (SELECT AnimalID 
                 FROM exhibitanimal
-                WHERE exhibitID = 1);";
+                WHERE exhibitID = $exhibit_id);";
 
-    if( ! $result = $connection->query($sql) ) {
-        echo "Crap! We've made a horrible mistake!";
+ $connection = new mysqli(HOST, USER, PASSWORD, DATABASE);
+ if ( $connection->connect_errno ) {
+     die("Connection Failed: " . $connection->connect_errono );
+ }
+    if( ! $animal_result = $connection->query($animal_sql) ) {
+        echo "Looks like something went terribly wrong with the Animal Query!";
         exit();
     }
 
-    if ( 0 == $result->num_rows) {
+    if ( 0 == $animal_result->num_rows) {
         $exhibit_animals = '<tr><td colspan="4">There are no Animals...</td></tr>';
     } else {
-        while( $row = $result->fetch_assoc() ) {
+        while( $animal = $animal_result->fetch_assoc() ) {
             // echo '<pre>';
-            // print_r($row);
+            // print_r($animal);
             // echo '</pre>';
             $exhibit_animals .= sprintf('
             <tr>
@@ -44,9 +46,9 @@ $exhibit_animals = null;
                 <td>%s</td>
 
             ', 
-            $row['AnimalID'],
-            $row['CommonName'],
-            $row['ScientificName'],
+            $animal['Name'],
+            $animal['CommonName'],
+            $animal['ScientificName'],
 
 
         );
@@ -67,14 +69,10 @@ $exhibit_animals = null;
     <title>Zoo Animal List</title>
 </head>
 <body>
-    <h1>List of Animals</h1>
-    <h2>Animals in the ExhibitName Exhibit</h2>
-    <p>Exhibit Description</p>
-    <h3>AnimalName - CommonName</h3>
-    <p>Scientific Name</p>
+
         <table>
         <tr>
-            <th>AnimalID</th>
+            <th>Name</th>
             <th>CommonName</th>
             <th>ScientificName</th>
         </tr>
