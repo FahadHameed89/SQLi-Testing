@@ -25,9 +25,11 @@ if ($result->num_rows > 0) {
         $exhibit_message .= sprintf('
             <h3>%s</h3>
             <p>%s</p>
+            <p><a href="exhibit_animals.php?exhibit_id=%d">View Animals</p>
         ',
         $row['ExhibitName'],
-        $row['ExhibitDescription']
+        $row['ExhibitDescription'],
+        $row['ExhibitID']
     );
     }
 
