@@ -1,5 +1,16 @@
 <?php
     require '../constants.php';
+    if( $_POST) {
+        echo '<pre>';
+        print_r($_POST);
+        echo "The form was successfully submitted...! Thanks for the data sucker!";
+        echo '</pre>';
+        $connection = new MySQLi(HOST, USER, PASSWORD, DATABASE);
+        if ( $connection->connect_errno ) {
+            die('Connection Failed!: ' . $connection->connect_error);
+        }
+    }
+
 ?>
 
 <!DOCTYPE html>
