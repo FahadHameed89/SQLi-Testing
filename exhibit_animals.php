@@ -1,83 +1,84 @@
 <?php
-require 'constants.php';
+    require 'constants.php';
 
-$exhibit_animals = null;
-$exhibit_animals = "";
-//$exhibit_id = $_GET['exhibit_id'];
-//echo $exhibit_id;
+    $exhibit_id = null;
+    $animals = "";
+    $exhibit_name = "";
+    $exhibit_description = "";
+    $message = "";
 
-    if ( !isset( $_GET['exhibit_id'] ) || $_GET['exhibit_id'] === "" ) {
-        echo"You messed up bruh";
+    if( !isset( $_GET['exhibit_id'] ) || $_GET['exhibit_id'] === "" ) {
+        echo "You have reached this page by mistake.";
         exit();
     }
-
     $exhibit_id = $_GET['exhibit_id'];
 
- // Create A Connection
-
     $animal_sql = "SELECT Name, CommonName, ScientificName
-            FROM animal 
-            INNER JOIN species USING (SpeciesID)
-            WHERE AnimalID IN
-                (SELECT AnimalID 
-                FROM exhibitanimal
-                WHERE exhibitID = $exhibit_id);";
+    FROM Animal
+    INNER JOIN ExhibitAnimal USING(AnimalID)
+    INNER JOIN Species USING(SpeciesID)
+    WHERE ExhibitID = $exhibit_id
+    ORDER BY Name ASC";
 
- $connection = new mysqli(HOST, USER, PASSWORD, DATABASE);
- if ( $connection->connect_errno ) {
-     die("Connection Failed: " . $connection->connect_errono );
- }
-    if( ! $animal_result = $connection->query($animal_sql) ) {
-        echo "Looks like something went terribly wrong with the Animal Query!";
+    $exhibit_sql = "SELECT ExhibitName, ExhibitDescription
+    FROM Exhibit
+    WHERE ExhibitID = $exhibit_id";
+
+    $connection = new mysqli(HOST, USER, PASSWORD, DATABASE);
+    if( $connection->connect_errno ) {
+        die("Connection failed: ". $connection->connect_error);
+    }
+
+    if( !$animal_result = $connection->query($animal_sql) ) {
+        echo "Something went wrong with the animal query";
         exit();
     }
 
-    if ( 0 == $animal_result->num_rows) {
-        $exhibit_animals = '<tr><td colspan="4">There are no Animals...</td></tr>';
+    if( !$exhibit_result = $connection->query($exhibit_sql) ) {
+        echo "Something went wrong with the exhibit query";
+        exit();
+    }
+
+    $connection->close();
+
+    if( 0 === $animal_result->num_rows ) {
+        $message = "<p>There are no animals on this exhibit</p>";
     } else {
         while( $animal = $animal_result->fetch_assoc() ) {
-            // echo '<pre>';
-            // print_r($animal);
-            // echo '</pre>';
-            $exhibit_animals .= sprintf('
-            <tr>
-                <td>%s</td>
-                <td>%s</td>
-                <td>%s</td>
-
-            ', 
+            $animals .= sprintf('
+            <h3>%s - %s</h3>
+            <p>%s</p>',
             $animal['Name'],
             $animal['CommonName'],
             $animal['ScientificName'],
-
-
-        );
+            );
         }
     }
     
-    $connection->close();
 
+    if( 0 === $exhibit_result->num_rows ) {
+        $message .= "<p>There is no exhibit with that ID</p>";
+    } else  {
+        while( $exhibit = $exhibit_result->fetch_assoc() ) {
+            $exhibit_name = $exhibit['ExhibitName'];
+            $exhibit_description = $exhibit['ExhibitDescription'];
+        }
+    }
 
-
+    
+    
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoo Animal List</title>
+    <title>TechCareers Exhibit Animals</title>
 </head>
 <body>
-
-        <table>
-        <tr>
-            <th>Name</th>
-            <th>CommonName</th>
-            <th>ScientificName</th>
-        </tr>
-        <p>This is Exhibit # <?php echo $exhibit_id?></p>
-            <?php echo $exhibit_animals ?>
-        </table>
+    <h1>Animals in the <?php echo $exhibit_name; ?> Exhibit</h1>
+    <p><?php echo $exhibit_description; ?></p>
+    <?php echo $message; ?>
+    <?php echo $animals; ?>
 </body>
 </html>
