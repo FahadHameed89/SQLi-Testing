@@ -1,6 +1,9 @@
  <?php
+
+ require 'constants.php';
+
  // Create A Connection
- $connection = new mysqli('localhost', 'root', '', 'zoo');
+ $connection = new mysqli(HOST, USER, PASSWORD, DATABASE);
  
 if ($connection->connect_error) {
     die('Connection Failed: ' . $connection->connect_error);
