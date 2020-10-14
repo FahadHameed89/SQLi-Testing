@@ -22,6 +22,18 @@ $staff_members = null;
             // echo '<pre>';
             // print_r($row);
             // echo '</pre>';
+            $staff_members .= sprintf('
+            <tr>
+                <td>%s</td>
+                <td>%s</td>
+                <td>%s</td>
+                <td>Edit</td>
+            </tr>
+            ', 
+            $row['StaffID'],
+            $row['FirstName'],
+            $row['LastName']
+        );
         }
     }
     
