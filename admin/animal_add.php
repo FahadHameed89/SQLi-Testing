@@ -1,5 +1,36 @@
 <?php
     require '../constants.php';
+
+    $species_select_options = null;
+    $staff_select_options = null;
+    // Make a statement to select Species
+    $species_sql = "SELECT SpeciesID, CommonName FROM Species";
+
+    // Connection string
+    $connection = new MySQLi(HOST, USER, PASSWORD, DATABASE);
+    if( $connection->connect_errno ) {
+        die('Connection failed: ' . $connection->connect_error);
+    }
+    if(!$species_result = $connection->query($species_sql)) {
+        echo "Something is wrong with the species query";
+        exit();
+    }
+    // Check if rows > 0 -> IF we do, loop through and opulate options with the select
+    if( $species_result->num_rows > 0 ) {
+        while( $species = $species_result->fetch_assoc() ) {
+            // Populate Options
+            $species_select_options .= sprintf('
+                <option value="%s">%s</option>
+            ',
+            $species['SpeciesID'],
+            $species['CommonName']
+        );
+        }
+    }
+
+
+
+
     if( $_POST ) {
         echo '<pre>';
         print_r($_POST);
@@ -15,9 +46,6 @@
         $animal_origin = $connection->real_escape_string($_POST['animal_origin']);
         $animal_weight = $connection->real_escape_string($_POST['animal_weight']);
         $animal_dob = $connection->real_escape_string($_POST['animal_dob']);
-
-        $sql_species = "SELECT SpeciesID, CommonName
-                        FROM species;";
         
         $sql = "INSERT INTO Animal (Name, Gender, Origin, WeightLbs, DateOfBirth) 
                 VALUES('$animal_name', '$animal_gender', '$animal_origin', '$animal_weight', '$animal_dob')";
@@ -66,6 +94,7 @@
         <label for="animal_species">Species</label>
         <select name="animal_species" id="animal_species">
         <option value="">Select a Species</option>
+        <?php echo $species_select_options?>
         </select> 
     </p>
 
