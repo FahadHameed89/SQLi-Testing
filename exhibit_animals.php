@@ -1,10 +1,16 @@
 <?php
 require 'constants.php';
 
-
-
 $exhibit_animals = null;
-$exhibit_ID = null;
+//$exhibit_id = $_GET['exhibit_id'];
+//echo $exhibit_id;
+
+    if ( !isset( $_GET['exhibit_id'] ) || $_GET['exhibit_id'] === "" ) {
+        echo"You messed up bruh";
+        exit();
+    }
+
+    $exhibit_id = $_GET['exhibit_id'];
 
  // Create A Connection
  $connection = new mysqli(HOST, USER, PASSWORD, DATABASE);
@@ -62,16 +68,17 @@ $exhibit_ID = null;
 </head>
 <body>
     <h1>List of Animals</h1>
+    <h2>Animals in the ExhibitName Exhibit</h2>
+    <p>Exhibit Description</p>
+    <h3>AnimalName - CommonName</h3>
+    <p>Scientific Name</p>
         <table>
         <tr>
             <th>AnimalID</th>
             <th>CommonName</th>
             <th>ScientificName</th>
         </tr>
-
-<p>
-<?php echo "This is Exhibit #:" . $_GET['exhibitID']; ?>
-</p>
+        <p>This is Exhibit # <?php echo $exhibit_id?></p>
             <?php echo $exhibit_animals ?>
         </table>
 </body>
