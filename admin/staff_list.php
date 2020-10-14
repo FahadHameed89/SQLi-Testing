@@ -15,9 +15,15 @@ $staff_members = null;
         exit();
     }
 
-    if ( 0 === $result->num_rows) {
+    if ( 0 == $result->num_rows) {
         $staff_members = '<tr><td colspan="4">There are no Staff members...</td></tr>';
-    } 
+    } else {
+        while( $row = $result->fetch_assoc() ) {
+            // echo '<pre>';
+            // print_r($row);
+            // echo '</pre>';
+        }
+    }
     
     $connection->close();
 
@@ -35,8 +41,19 @@ $staff_members = null;
 <body>
     <h1>List of Staff Members</h1>
         <table>
-            <?php ?>
+        <tr>
+            <th>Staff ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <td>-1</td>
+            <td>Bob</td>
+            <td>The Builder</td>
+            <td>Edit</td>
+        </tr>
+            <?php echo $staff_members ?>
         </table>
-
 </body>
 </html>
