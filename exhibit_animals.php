@@ -11,14 +11,11 @@
         echo "You have reached this page by mistake.";
         exit();
     }
-    if ( !filter_var($_GET['exhibit_id'], FILTER_VALIDATE_INT) === false) 
-    {
+    if( filter_var($_GET['exhibit_id'], FILTER_VALIDATE_INT) ) {
         $exhibit_id = $_GET['exhibit_id'];
     } else {
-        die("Don't try to inject your filthy hacks...");
+        die("An incorrect value for exhibit ID was passed");
     }
- 
-
 
     $animal_sql = "SELECT Name, CommonName, ScientificName
     FROM Animal

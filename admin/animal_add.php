@@ -73,6 +73,7 @@
     <title>Zoo - Add animal</title>
 </head>
 <body>
+<?php include 'admin_menu.php' ?>
     <h1>Add an animal</h1>
     <?php if($message) echo $message; ?>
     <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" enctype="multipart/form-data">

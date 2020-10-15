@@ -38,6 +38,7 @@
     <title>Zoo - Add Staff</title>
 </head>
 <body>
+<?php include 'admin_menu.php' ?>
     <h1>Add a staff member</h1>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
     <p>
