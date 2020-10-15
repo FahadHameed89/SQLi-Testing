@@ -4,6 +4,7 @@
     $staff_select_options = null;
     $species_sql = "SELECT SpeciesID, CommonName FROM Species";
     $staff_sql = "SELECT StaffID, FirstName, LastName FROM Staff";
+    $message = null;
 
     $connection = new MySQLi(HOST, USER, PASSWORD, DATABASE);
     if( $connection->connect_errno ) {
@@ -18,7 +19,7 @@
         exit();
     }
 
-    $connection->close();
+    
 
     if( $species_result->num_rows > 0 ) {
         while( $species = $species_result->fetch_assoc() ) {
@@ -39,6 +40,30 @@
         }
     }
 
+    if( $_POST ) {
+        echo '<pre>';
+        print_r($_POST);
+        echo '</pre>';
+
+        if( $insert = $connection->prepare("INSERT INTO Animal(AnimalID, StaffID, Name, SpeciesID, Gender, Origin, WeightLbs, DateOfBirth, DateOfDeparture, DepartureCirumstances)
+        VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)")) {
+            if( $insert->bind_param("isissds", $_POST['staff'], $_POST['name'], $_POST['species'], $_POST['gender'], $_POST['origin'], $_POST['weight_lbs'], $_POST['date_of_birth']) ) {
+                if( $insert->execute() ) {
+                   $message = "You have added " . $_POST['name'] . " to the database"; 
+                } else {
+                    exit("There was a problem with the execute");
+                }
+            } else {
+                exit("There was a problem with the bind_param");
+            }
+        } else {
+            exit("There was a problem with the prepare statement");
+        }
+
+
+    }
+    $connection->close();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,7 +74,8 @@
 </head>
 <body>
     <h1>Add an animal</h1>
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
+    <?php if($message) echo $message; ?>
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" enctype="multipart/form-data">
         <p>
             <label for="name">Name</label>
             <input type="text" id="name" name="name">
