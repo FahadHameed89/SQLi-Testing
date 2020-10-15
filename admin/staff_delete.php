@@ -1,7 +1,37 @@
-<?php
+<?php 
+
+    require '../constants.php';
+    $staff_id = null;
+    $fist_name = null;
+    $last_name = null;
+
+    $connection = new MySQLi(HOST, USER, PASSWORD, DATABASE);
+    if( $connection->connect_errno ) {
+        die("Connection failed:" . $connection->connect_error);
+    }
+    if( !isset($_GET['staff_id']) || $_GET['staff_id'] === "" ) {
+        exit("You have reached this page by mistake");
+    }
+    if( filter_var($_GET['staff_id'], FILTER_VALIDATE_INT) ) {
+        $staff_id = $_GET['staff_id'];
+    } else {
+        exit("An incorrect value for Staff ID was used");
+    }
+    $sql = "SELECT * FROM Staff WHERE StaffID=$staff_id";
+    $result = $connection->query($sql);
+    if( !$result ) {
+        exit("There was a problem fetching results");
+    }
+    if( 0 === $result->num_rows ) {
+        exit("The staff id provided did not match anyone in the database");
+    }
+
+    while( $row = $result->fetch_assoc() ) {
+        $first_name = $row['FirstName'];
+        $last_name = $row['LastName'];
+    }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +40,12 @@
     <title>Zoo - Remove Staff Member</title>
 </head>
 <body>
-    <?php include 'admin_menu.php'?>
-    <h1>Remove a Staff Member:</h1>
+    <?php include 'admin_menu.php'; ?>
+    <h1>Remove Staff Member</h1>
     <form action="#" method="POST" enctype="multipart/form-data">
-    <p>Are you sure you want to delete this staff member?! This action cannot be reversed...</p>
-    <input type="hidden" name="staff_id" value="STAFF_ID">
-    <input type="submit" value="Submit Deletion">
+        <p>Are you certain you want to remove <?php echo $first_name . ' ' . $last_name?>?</p>
+        <input type="hidden" name="staff_id" value="<?php echo $staff_id?>">
+        <input type="submit" value="Yes, remove staff member">
     </form>
 </body>
 </html>
