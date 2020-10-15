@@ -24,12 +24,13 @@ if( 0 === $result->num_rows ) {
                 <td>%d</td>
                 <td>%s</td>
                 <td>%s</td>
-                <td><a href="staff_edit.php?staff_id=%d">Edit</a></td>
+                <td><a href="staff_edit.php?staff_id=%d">Edit</a> | <a href="staff_delete.php?staff_id=%d">Remove</a></td>
             </tr>
             ',
             $row['StaffID'],
             $row['FirstName'],
             $row['LastName'],
+            $row['StaffID'],
             $row['StaffID'],
          );
     }
